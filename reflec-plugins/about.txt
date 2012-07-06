@@ -1,0 +1,73 @@
+﻿# Reflec のプラグイン機構について
+
+このディレクトリ以下においた Python スクリプトファイル (*.py *.pyw）は、
+Reflec の起動時に自動的に読み込まれます。
+
+スクリプトファイルの中に `reflec.plugin.ReflecBasePlugin` を継承したクラス
+（プラグインクラス）を定義して、トップレベルに定義した `__load__` という
+リストにそのプラグインクラスの名前の文字列を並べておく事で、Reflec の起動と同時に
+自動的にインスタンス化されます。
+
+プラグインクラスに「`app_`」「`server_`」「`client_`」で始まる名前のメソッドが
+定義されている場合、それぞれアプリケーション、サーバー、クライアントのイ
+ベントを処理するためのイベントハンドラとして自動的に登録されます。
+
+## イベントについて
+
+イベントは、大まかに３つの種類に分ける事ができます。
+
+    app
+        Reflec アプリケーション全体の動作に関するイベント
+
+        app_start(sender)                    アプリケーションが開始
+        app_terminate(sender)                アプリケーションが終了
+        app_tick(sender)                     1秒おきによばれる
+
+    server
+        外部からの接続を受け付けるサーバーに関するイベント
+
+        server_start(sender)                 サーバーが開始
+        server_terminating(sender)           サーバーが終了中
+        server_terminate(sender)             サーバーが終了
+        server_request(sender, client_addr)  外部からのリクエストを受け取った
+        server_processing(sender)            リクエストを処理中
+        server_processed(sender)             リクエストの処理を完了
+        server_client_num(sender)            接続人数が変化した
+
+    client
+        ミラー元からのストリーミングを受信するクライアントに関するイベント
+
+        client_start(sender)                 クライアントが開始
+        client_terminate(sender)             クライアントが終了
+        client_processing(sender)            クライアントの受信処理中
+        client_processed(sender)             クライアントの受信処理を完了
+        client_connecting(sender)            ミラー元へ接続中
+        client_connected(sender)             ミラー元へ接続を完了
+        client_request(sender, header)       ミラー元へリクエストを送信
+        client_response(sender, response)    ミラー元からレスポンスを受信
+        client_info_packet(sender)           ミラー元から情報パケットを受信
+        client_start_streaming(sender)       ミラー元からストリーミング受信開始
+        client_finish_streaming(sender)      ミラー元からストリーミング受信終了
+
+プラグインクラスにこれらのイベントの名前を持つメソッドを定義することで
+そのメソッドをイベントハンドラとして登録する事ができます。
+
+メソッドには `self` の他に、イベントの送信元（`app`, `server`, `client`）も一緒に
+渡されます。
+
+## サンプル
+
+    from reflec.plugin import ReflecBasePlugin
+
+    __load__ = ["SayHelloPlugin"]
+
+    class SayHelloPlugin(ReflecBasePlugin):
+
+        def app_start(self, sender):
+            print "Hello, Application!"
+
+        def client_start(self, sender):
+            print "Hello, Client!"
+
+        def server_start(self, sender):
+            print "Hello, Server!"

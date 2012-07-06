@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<clients>
+    <!--
+    接続先別の設定ファイル.
+    お好みで設定を変更して "clients.xml" という名前で保存してください.
+
+    Reflec, LiveAlive 両方から利用されます.
+
+    Reflec では, 中継元のアドレス（Host:PortPath） が一致する
+    <client> 要素があれば, その設定を利用するようになります.
+
+    <max> 要素でサーバーの最大同時接続人数を設定できます.
+    <max> 要素がない場合, デフォルトの値 (100人) が利用されます.
+
+    <media> 要素の子として記述した要素は, ストリーミングの追加メタ情報として
+    Make Index プラグインなどで利用されます.
+
+    LiveAlive では, 全ての <client> 要素の address を監視します.
+    もし, 監視中のアドレスでストリーミングが始まった場合, Reflec を
+    server のアドレスに割り当てて起動します.
+    <client> の子要素については特に利用されません.
+    -->
+
+    <client address="example.com:2222/" server=":8900">
+        <max>200</max>
+        <media>
+            <name>Example</name>
+            <url>http://example.com/</url>
+        </media>
+    </client>
+
+    <client address="localhost:8888" server=":8901">
+        <max>123</max>
+        <media>
+            <name>ローカルテスト</name>
+            <url>http://localhost/</url>
+        </media>
+    </client>
+
+</clients>

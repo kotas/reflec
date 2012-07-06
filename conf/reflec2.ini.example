@@ -1,0 +1,159 @@
+# -*- coding: Shift_JIS -*-
+#
+# Reflec2 設定ファイル
+#
+# お好みで設定を変えたあと "reflec2.ini" という名前で保存してください.
+#
+# ここで設定するのはデフォルトのオプションで, 多くのオプションは
+# コマンドラインに渡すパラメータによって上書きする事ができます.
+#
+
+#--------------------#
+# サーバー関連の設定 #
+#--------------------#
+[server]
+
+# サーバーに割り当てるアドレスとポート ("アドレス:ポート" 形式)
+#     アドレスを空にした場合はローカルの全てのアドレスに対して割り当てる.
+bindings = :8080
+
+# 最大同時接続人数
+client_max = 100
+
+# 終了時の強制終了タイムアウト秒数
+timeout = 180
+
+# タイムアウトまでのカウントダウン間隔秒数
+countdown = 10
+
+#------------------------#
+# クライアント関連の設定 #
+#------------------------#
+[client]
+
+# デフォルトのリクエスト先
+host = localhost
+port = 8888
+path = /
+
+# バッファーのサイズ (大きいほど安定するがメモリ消費量が多くなる)
+bufsize = 16
+
+# 受信のタイムアウト
+timeout = 30
+
+# リトライ回数
+retry = 5
+
+# リトライの間隔秒数
+retrysec = 10
+
+#----------------#
+# ログ関連の設定 #
+#----------------#
+[logging]
+
+# ログファイル名 (空にすると出力しない)
+#     %a はサーバーに割り当てられたアドレス
+#     %p はサーバーに割り当てられたポート
+#     にそれぞれ置き換えられる
+filename = reflec_%a%p.log
+
+#--------------------#
+# プラグイン用の設定 #
+#--------------------#
+
+# =====================
+# Make Index プラグイン
+# =====================
+[makeindex]
+
+# インデックスをどの形式で作成するか
+#    xml   = XML ファイル
+#    mysql = MySQL データベース
+storage = mysql
+
+# 作成するインデックス XML ファイルの名前
+# storage を xml に設定した場合のみ有効
+xmlfile = index.xml
+
+# インデックスのアップデート先テーブルの名前
+# storage を mysql に設定した場合のみ有効
+tablename = m_lives
+
+# ==========================
+# Client Specific プラグイン
+# ==========================
+[clientspec]
+
+# クライアント設定がどこに保存されているか
+#    xml   = XML ファイル
+#    mysql = MySQL データベース
+storage = mysql
+
+# クライアント設定の XML ファイルの名前
+# storage を xml に設定した場合のみ有効
+xmlfile = conf/clients.xml
+
+# クライアント設定のテーブルの名前
+# storage を mysql に設定した場合のみ有効
+# DB への接続オプションは [database] セクションで設定されたものを利用する
+tablename = m_clients
+
+# =======================
+# Skype Notify プラグイン
+# =======================
+[skypenotify]
+
+# Skype のユーザーリストのファイル名
+listfile = skype.dat
+
+# author がない時の名前
+no_author = 誰かさん
+
+# title がない時のタイトル
+no_title = (題名なし)
+
+# description がない時の説明
+no_description = (説明なし)
+
+# その他, 頭に no_ を付けるとデフォルト値を設定できる
+
+# 通知メッセージ
+#     <br> = 改行
+#     %(～)s = 変数埋め込み
+#            author:      作者
+#            port:        Reflec の中継先ポート
+#            title:       タイトル
+#            description: 説明
+#            その他:      Client Specific プラグインによって設定された
+#                         メタ情報 (url, name など)
+msg_notify = %(author)s による放送が始まりました<br>再生: http://localhost:%(port)s<br>題名: %(title)s<br>説明: %(description)s
+
+# ==================
+# Twitter プラグイン
+# ==================
+[twitter]
+
+# Twitter アカウントのユーザー名
+username = example
+
+# Twitter アカウントのパスワード
+password = example
+
+# author がない時の名前
+no_author = 誰かさん
+
+# title がない時のタイトル
+no_title = (題名なし)
+
+# 通知メッセージ
+# メッセージは 140 文字まで
+#     %(～)s = 変数埋め込み
+#            author:      作者
+#            port:        Reflec の中継先ポート
+#            title:       タイトル
+#            description: 説明
+#            その他:      Client Specific プラグインによって設定された
+#                         メタ情報 (url, name など)
+msg_notify = %(author)s: %(title)s http://localhost:%(port)s
